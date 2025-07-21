@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SwiftForm AI – Smart Forms Generator</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; }
+    .hero { background: #f8f9fa; padding: 60px 20px; text-align: center; }
+    .hero h1 { font-size: 2.5rem; font-weight: bold; }
+    .hero p { font-size: 1.2rem; margin-top: 10px; }
+    .btn-primary { padding: 10px 30px; font-size: 1.1rem; }
+    .features { padding: 40px 20px; }
+    .footer { text-align: center; font-size: 0.9rem; padding: 20px; color: #888; }
+    .lang-switch { position: absolute; top: 20px; right: 20px; }
+  </style>
+</head>
+<body>
+  <div class="lang-switch">
+    <button onclick="switchLang('en')" class="btn btn-sm btn-outline-primary">EN</button>
+    <button onclick="switchLang('ar')" class="btn btn-sm btn-outline-secondary">AR</button>
+  </div>
+
+  <section class="hero" id="hero">
+    <h1 id="title">Design your smart form in 1 minute</h1>
+    <p id="subtitle">Powered by AI – No coding required</p>
+    <a href="#form-section" class="btn btn-primary mt-4" id="tryBtn">Try Now Free</a>
+  </section>
+
+  <section class="features container text-center">
+    <h2 class="mb-4" id="featuresTitle">What We Offer</h2>
+    <div class="row">
+      <div class="col-md-4">
+        <h5 id="feature1Title">🔧 Custom Forms</h5>
+        <p id="feature1Desc">Select your business type and we’ll generate a smart form for you.</p>
+      </div>
+      <div class="col-md-4">
+        <h5 id="feature2Title">⚡ Fast & Easy</h5>
+        <p id="feature2Desc">No design or coding needed. Ready instantly.</p>
+      </div>
+      <div class="col-md-4">
+        <h5 id="feature3Title">💡 AI Powered</h5>
+        <p id="feature3Desc">Describe what you need, and we build it using GPT.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="form-section" class="container my-5">
+    <h3 class="text-center mb-4" id="formTitle">Try the Smart Form</h3>
+    <form class="p-4 border rounded bg-light">
+      <div class="mb-3">
+        <label class="form-label" id="descLabel">Describe your business</label>
+        <input type="text" class="form-control" placeholder="e.g. Fast food restaurant with delivery...">
+      </div>
+      <div class="mb-3">
+        <label class="form-label" id="typeLabel">Choose a form type</label>
+        <select class="form-select">
+          <option>Booking Form</option>
+          <option>Product Order</option>
+          <option>Feedback Form</option>
+          <option>Email Subscription</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-success" id="generateBtn">Generate Form</button>
+    </form>
+  </section>
+
+  <footer class="footer">
+    <p id="footerText">© 2025 SwiftForm.ai – All rights reserved</p>
+  </footer>
+
+  <script>
+    const translations = {
+      en: {
+        title: "Design your smart form in 1 minute",
+        subtitle: "Powered by AI – No coding required",
+        tryBtn: "Try Now Free",
+        featuresTitle: "What We Offer",
+        feature1Title: "🔧 Custom Forms",
+        feature1Desc: "Select your business type and we’ll generate a smart form for you.",
+        feature2Title: "⚡ Fast & Easy",
+        feature2Desc: "No design or coding needed. Ready instantly.",
+        feature3Title: "💡 AI Powered",
+        feature3Desc: "Describe what you need, and we build it using GPT.",
+        formTitle: "Try the Smart Form",
+        descLabel: "Describe your business",
+        typeLabel: "Choose a form type",
+        generateBtn: "Generate Form",
+        footerText: "© 2025 SwiftForm.ai – All rights reserved"
+      },
+      ar: {
+        title: "صمّم نموذج أعمالك الذكي خلال دقيقة",
+        subtitle: "باستخدام الذكاء الاصطناعي – دون أي خبرة برمجية",
+        tryBtn: "جرّب الآن مجانًا",
+        featuresTitle: "ماذا نقدم لك؟",
+        feature1Title: "🔧 نموذج مخصص",
+        feature1Desc: "اختر نوع عملك وسنصنع لك نموذجًا ذكيًا خلال لحظات.",
+        feature2Title: "⚡ سرعة فائقة",
+        feature2Desc: "لا حاجة لتصميم أو برمجة. النموذج جاهز فورًا.",
+        feature3Title: "💡 ذكاء اصطناعي",
+        feature3Desc: "نماذج مبنية بناءً على وصفك فقط، باستخدام GPT.",
+        formTitle: "جرب النموذج الذكي",
+        descLabel: "وصف نشاطك",
+        typeLabel: "نوع النموذج المطلوب",
+        generateBtn: "أنشئ النموذج",
+        footerText: "© 2025 SwiftForm.ai – جميع الحقوق محفوظة"
+      }
+    };
+
+    function switchLang(lang) {
+      const t = translations[lang];
+      document.documentElement.lang = lang;
+      document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+      for (let key in t) {
+        document.getElementById(key).innerText = t[key];
+      }
+    }
+  </script>
+
+</body>
+</html>
