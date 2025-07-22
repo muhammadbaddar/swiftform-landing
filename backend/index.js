@@ -7,12 +7,14 @@ app.use(cors());
 app.use(express.json());
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY, // هذا سيقرأ القيمة من إعدادات Render
+  apiKey: process.env.OPENAI_API_KEY, 
 });
 
 app.post('/api/generate-form', async (req, res) => {
   try {
     const { description } = req.body;
+
+
 
     const response = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
