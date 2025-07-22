@@ -1,24 +1,23 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { Configuration, OpenAIApi } from 'openai';
+import OpenAI from 'openai';
 
 dotenv.config();
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY
 });
-const openai = new OpenAIApi(configuration);
 
 app.post('/api/generate-form', async (req, res) => {
   try {
     const { businessType, fields } = req.body;
     const prompt = `Generate an HTML form for a ${businessType} business. Fields: ${fields.join(', ')}.`;
 
-    const completion = await openai.createChatCompletion({
+    const completion = await openai.chat.completions.create({
       model: 'gpt-4',
       messages: [
         { role: 'system', content: 'You are an expert HTML form generator.' },
@@ -26,10 +25,10 @@ app.post('/api/generate-form', async (req, res) => {
       ]
     });
 
-    const code = completion.data.choices[0].message.content;
+    const code = completion.choices[0].message.content;
     res.json({ code });
   } catch (error) {
-    console.error(error);
+    console.error('Error generating form:', error);
     res.status(500).json({ error: 'Failed to generate form' });
   }
 });
