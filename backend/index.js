@@ -1,37 +1,42 @@
+import OpenAI from 'openai';
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
-import OpenAI from 'openai';
 
-dotenv.config();
 const app = express();
 app.use(cors());
 app.use(express.json());
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
+  apiKey: process.env.OPENAI_API_KEY, // هذا سيقرأ القيمة من إعدادات Render
 });
 
 app.post('/api/generate-form', async (req, res) => {
   try {
-    const { businessType, fields } = req.body;
-    const prompt = `Generate an HTML form for a ${businessType} business. Fields: ${fields.join(', ')}.`;
+    const { description } = req.body;
 
-    const completion = await openai.chat.completions.create({
-      model: 'gpt-4',
+    const response = await openai.chat.completions.create({
+      model: "gpt-3.5-turbo",
       messages: [
-        { role: 'system', content: 'You are an expert HTML form generator.' },
-        { role: 'user', content: prompt }
-      ]
+        {
+          role: "system",
+          content: "You are a helpful assistant that creates HTML forms based on user descriptions.",
+        },
+        {
+          role: "user",
+          content: description,
+        },
+      ],
     });
 
-    const code = completion.choices[0].message.content;
-    res.json({ code });
+    const htmlForm = response.choices[0]?.message?.content || "";
+
+    res.json({ form: htmlForm });
   } catch (error) {
-    console.error('Error generating form:', error);
-    res.status(500).json({ error: 'Failed to generate form' });
+    console.error("Error generating form:", error);
+    res.status(500).json({ error: "Failed to generate form" });
   }
 });
 
-const port = process.env.PORT || 3000;
-app.listen(port, () => console.log(`Server running on port ${port}`));
+app.listen(10000, () => {
+  console.log('Server running on port 10000');
+});
