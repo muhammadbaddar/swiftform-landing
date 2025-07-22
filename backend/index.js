@@ -1,44 +1,23 @@
-import OpenAI from 'openai';
-import express from 'express';
-import cors from 'cors';
-
-const app = express();
-app.use(cors());
-app.use(express.json());
+import OpenAI from "openai";
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY, 
+  baseURL: "https://openrouter.ai/api/v1",
+  apiKey: process.env.OPENROUTER_API_KEY, // أو ضعه مباشرة بدل env إذا كنت لا تستخدم dotenv
+  defaultHeaders: {
+    "HTTP-Referer": "https://swiftform.ai", // ضع اسم موقعك
+    "X-Title": "swiftform.ai",
+  },
 });
 
-app.post('/api/generate-form', async (req, res) => {
-  try {
-    const { description } = req.body;
+export async function generateForm(description) {
+  const response = await openai.chat.completions.create({
+    model: "openchat/openchat-3.5-1210", // نموذج مجاني
+    messages: [
+      { role: "system", content: "You are a helpful assistant that generates HTML forms from user requests." },
+      { role: "user", content: description },
+    ],
+    temperature: 0.7,
+  });
 
-
-
-    const response = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
-      messages: [
-        {
-          role: "system",
-          content: "You are a helpful assistant that creates HTML forms based on user descriptions.",
-        },
-        {
-          role: "user",
-          content: description,
-        },
-      ],
-    });
-
-    const htmlForm = response.choices[0]?.message?.content || "";
-
-    res.json({ form: htmlForm });
-  } catch (error) {
-    console.error("Error generating form:", error);
-    res.status(500).json({ error: "Failed to generate form" });
-  }
-});
-
-app.listen(10000, () => {
-  console.log('Server running on port 10000');
-});
+  return response.choices[0]?.message?.content || "";
+}
