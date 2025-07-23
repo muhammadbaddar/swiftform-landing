@@ -7,9 +7,9 @@ const port = process.env.PORT || 10000;
 
 app.use(bodyParser.json());
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY, // أو استخدم key مباشر
-  baseURL: "https://openrouter.ai/api/v1"
+const response = await openai.chat.completions.create({
+  model: "openchat/openchat-3.5", // ✅ هذا يعمل
+  messages: [{ role: "user", content: "أعطني نموذجًا لطلب توظيف." }]
 });
 
 app.post('/api/generate-form', async (req, res) => {
