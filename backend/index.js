@@ -1,39 +1,46 @@
 import express from "express";
-import bodyParser from "body-parser";
-import { OpenAI } from "openai"; // ✅ تعريف مكتبة OpenAI
+import cors from "cors";
+import OpenAI from "openai";
 
 const app = express();
-app.use(bodyParser.json());
+const port = process.env.PORT || 10000;
 
-// ✅ تعريف الكائن openai باستخدام OpenRouter
+app.use(cors());
+app.use(express.json());
+
+// إعداد OpenRouter بموديل مجاني لا يحتاج رصيد
 const openai = new OpenAI({
+  apiKey: process.env.OPENROUTER_API_KEY || "free", // يمكنك استبدال "free" بـ API Key مباشرة إن أحببت
   baseURL: "https://openrouter.ai/api/v1",
-  apiKey: process.env.OPENROUTER_API_KEY,
-  defaultHeaders: {
-    "HTTP-Referer": "https://swiftform.ai",
-    "X-Title": "SwiftForm AI Generator"
-  }
 });
 
-// ✅ تعريف المسار الصحيح
 app.post("/api/generate-form", async (req, res) => {
-  try {
-    const { prompt } = req.body;
+  const { description } = req.body;
 
+  try {
     const response = await openai.chat.completions.create({
-	  model: "mistralai/mistral-7b-instruct",
-      messages: [{ role: "user", content: `Generate an HTML form with fields for: ${prompt}` }]
+      model: "gryphe/mythomist-7b", // موديل مجاني 100%
+      messages: [
+        {
+          role: "system",
+          content: "You are a helpful assistant that creates clean HTML forms.",
+        },
+        {
+          role: "user",
+          content: `Generate an HTML form based on this description: ${description}`,
+        },
+      ],
+      temperature: 0.7,
     });
 
-    const formHTML = response.choices[0].message.content;
-    res.json({ form: formHTML });
+    const generatedForm = response.choices[0]?.message?.content || "";
+    res.json({ form: generatedForm });
   } catch (error) {
     console.error("Error generating form:", error);
     res.status(500).json({ error: "Failed to generate form" });
   }
 });
 
-const port = process.env.PORT || 10000;
 app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+  console.log(`✅ Server running on port ${port}`);
 });
