@@ -1,26 +1,28 @@
 import express from "express";
 import bodyParser from "body-parser";
-import { OpenAI } from "openai";
+import { OpenAI } from "openai"; // ✅ تعريف مكتبة OpenAI
 
 const app = express();
 app.use(bodyParser.json());
 
+// ✅ تعريف الكائن openai باستخدام OpenRouter
 const openai = new OpenAI({
   baseURL: "https://openrouter.ai/api/v1",
   apiKey: process.env.OPENROUTER_API_KEY,
   defaultHeaders: {
-    "HTTP-Referer": "https://swiftform.ai", // اسم الدومين الخاص بك
-    "X-Title": "SwiftForm AI Generator",     // اسم المشروع
-  },
+    "HTTP-Referer": "https://swiftform.ai",
+    "X-Title": "SwiftForm AI Generator"
+  }
 });
 
+// ✅ تعريف المسار الصحيح
 app.post("/api/generate-form", async (req, res) => {
   try {
     const { prompt } = req.body;
 
     const response = await openai.chat.completions.create({
-      model: "openchat/openchat-3.5", // تم تعديله ليكون موديل مدعوم فعليًا
-      messages: [{ role: "user", content: `Generate an HTML form with fields for: ${prompt}` }],
+      model: "openchat/openchat-3.5", // ✅ هذا الموديل مدعوم من OpenRouter
+      messages: [{ role: "user", content: `Generate an HTML form with fields for: ${prompt}` }]
     });
 
     const formHTML = response.choices[0].message.content;
