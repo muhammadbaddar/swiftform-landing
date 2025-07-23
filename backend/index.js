@@ -26,20 +26,11 @@ app.post("/api/generate-form", async (req, res) => {
       return res.status(400).json({ error: "Prompt is required" });
     }
 
-    const response = await openai.chat.completions.create({
-      model: "openchat/openchat-3.5",
-      messages: [
-        {
-          role: "system",
-          content: "You are a helpful assistant that creates HTML forms based on user requests.",
-        },
-        {
-          role: "user",
-          content: prompt,
-        },
-      ],
-      temperature: 0.7,
-    });
+   const response = await openai.chat.completions.create({
+  model: "openai/gpt-3.5-turbo", // ✅ استخدم موديل معروف
+  messages: [{ role: "user", content: prompt }],
+  temperature: 0.7,
+});
 
     const generatedForm = response.choices[0]?.message?.content?.trim();
     res.json({ form: generatedForm });
