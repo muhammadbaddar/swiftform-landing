@@ -21,7 +21,7 @@ app.post("/api/generate-form", async (req, res) => {
     const { prompt } = req.body;
 
     const response = await openai.chat.completions.create({
-      model: "openchat/openchat-3.5", // ✅ هذا الموديل مدعوم من OpenRouter
+	  model: "mistralai/mistral-7b-instruct",
       messages: [{ role: "user", content: `Generate an HTML form with fields for: ${prompt}` }]
     });
 
