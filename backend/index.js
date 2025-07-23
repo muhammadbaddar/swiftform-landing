@@ -1,23 +1,48 @@
+import express from "express";
+import bodyParser from "body-parser";
 import OpenAI from "openai";
+
+const app = express();
+const port = 10000;
+
+app.use(bodyParser.json());
 
 const openai = new OpenAI({
   baseURL: "https://openrouter.ai/api/v1",
-  apiKey: process.env.OPENROUTER_API_KEY, // أو ضعه مباشرة بدل env إذا كنت لا تستخدم dotenv
+  apiKey: process.env.OPENROUTER_API_KEY, // يجب أن تضع هذا المتغير في Render
   defaultHeaders: {
-    "HTTP-Referer": "https://swiftform.ai", // ضع اسم موقعك
-    "X-Title": "swiftform.ai",
+    "HTTP-Referer": "https://swiftform.ai", // رابط مشروعك
+    "X-Title": "swiftform.ai",               // اسم مشروعك
   },
 });
 
-export async function generateForm(description) {
-  const response = await openai.chat.completions.create({
-    model: "openchat/openchat-3.5-1210", // نموذج مجاني
-    messages: [
-      { role: "system", content: "You are a helpful assistant that generates HTML forms from user requests." },
-      { role: "user", content: description },
-    ],
-    temperature: 0.7,
-  });
+app.post("/generate-form", async (req, res) => {
+  const { prompt } = req.body;
 
-  return response.choices[0]?.message?.content || "";
-}
+  try {
+    const completion = await openai.chat.completions.create({
+      model: "openchat/openchat-7b:free", // أو أي موديل مجاني مثل mistral
+      messages: [
+        {
+          role: "system",
+          content: "أنت خبير في تصميم نماذج HTML ذكية ومناسبة لأي استخدام.",
+        },
+        {
+          role: "user",
+          content: `صمّم نموذجًا بسيطًا يحتوي على الحقول التالية: ${prompt}. يجب أن يكون بلغة HTML فقط.`,
+        },
+      ],
+      temperature: 0.7,
+    });
+
+    const html = completion.choices[0]?.message?.content;
+    res.send({ html });
+  } catch (error) {
+    console.error("Error generating form:", error);
+    res.status(500).send({ error: "Failed to generate form" });
+  }
+});
+
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});
